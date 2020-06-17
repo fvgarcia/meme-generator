@@ -1,13 +1,14 @@
 import React, {useState, useEffect} from 'react';
+import qs from 'qs';
 
 import {Wrapper, Card, Templates, Form, Button} from './styles';
-
 import logo from '../../assets/logo.svg';
 
 const Home = () => {
     const [templates, setTemplates] = useState([]);
     const [selectedTemplate, setSelectedTemplate] = useState(null);
     const [boxes, setBoxes] = useState([]);
+    const [generatedMeme, setGeneratedMeme] = useState(null);
 
     useEffect(() => {
         (async () => {
@@ -28,47 +29,76 @@ const Home = () => {
         setBoxes([]);
     }
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
         e.preventDefault();
-        console.log(boxes);
+
+        const params = qs.stringify({
+            template_id: selectedTemplate.id,
+            username: 'yourusername',
+            password: 'yourpassword',
+            boxes: boxes.map(text => ({text})),
+        });
+
+        const resp = await fetch(`https://api.imgflip.com/caption_image?${params}`);
+        const {data: {url}} = await resp.json();
+
+        setGeneratedMeme(url);
+    }
+
+    function handleReset() {
+        setSelectedTemplate(null);
+        setBoxes([]);
+        setGeneratedMeme(null);
     }
 
     return (
         <Wrapper>
             <img src={logo} alt="MemeMaker"/>
+
             <Card>
-                <h2>
-                    Select a template
-                </h2>
-                <Templates>
-                    {templates.map(template => (
-                        <button
-                            key={template.id}
-                            type="button"
-                            onClick={() => handleSelectTemplate(template)}
-                            className={template.id === selectedTemplate?.id ? 'selected' : ''}
-                        >
-                            <img src={template.url} alt={template.name}/>
-                        </button>
-                    ))}
-                </Templates>
-                {selectedTemplate && (
+                {generatedMeme && (
+                    <>
+                        <img src={generatedMeme} alt="Generated Meme"/>
+                        <Button type="button" onClick={handleReset}>Criar outro meme</Button>
+                    </>
+                )}
+
+                {!generatedMeme && (
                     <>
                         <h2>
-                            Texts
+                            Choose a template
                         </h2>
-                        <Form onSubmit={handleSubmit}>
-                            {(new Array(selectedTemplate.box_count))
-                                .fill('')
-                                .map((_, index) => (
-                                    <input
-                                        key={String(index+1)}
-                                        placeholder={`Text #${index+1}`}
-                                        onChange={handleInputChange(index)}
-                                    />
-                                ))}
-                            <Button type="submit">MakeMyMeme</Button>
-                        </Form>
+                        <Templates>
+                            {templates.map((template) => (
+                                <button
+                                    key={template.id}
+                                    type="button"
+                                    onClick={() => handleSelectTemplate(template)}
+                                    className={template.id === selectedTemplate?.id ? 'selected' : ''}
+                                >
+                                    <img src={template.url} alt={template.name}/>
+                                </button>
+                            ))}
+                        </Templates>
+
+                        {selectedTemplate && (
+                            <>
+                                <h2>
+                                    Texts
+                                </h2>
+                                <Form onSubmit={handleSubmit}>
+                                    {(new Array(selectedTemplate.box_count)).fill('').map((_, index) => (
+                                        <input
+                                            key={String(index+1)}
+                                            placeholder={`Text #${index+1}`}
+                                            onChange={handleInputChange(index)}
+                                        />
+                                    ))}
+
+                                    <Button type="submit">MakeMyMeme</Button>
+                                </Form>
+                            </>
+                        )}
                     </>
                 )}
             </Card>
