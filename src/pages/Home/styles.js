@@ -1,12 +1,20 @@
 import styled from 'styled-components';
 
+import bg from '../../assets/bg.jpg';
+
 export const Wrapper = styled.div`
+  background-image: url(${bg});
+  background-repeat: no-repeat;
+  background-size: 100% 100vh;
   width: 100%;
   height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  img {
+    width: 540px;
+  }
 `;
 
 export const Card = styled.div`
@@ -20,6 +28,14 @@ export const Card = styled.div`
     font-size: 22px;
     color: #392D2D;
     margin-bottom: 10px;
+  }
+  img{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+    width: 300px;
+    height: 300px
   }
 `;
 
@@ -71,5 +87,21 @@ export const Button = styled.button`
   border: 2px solid transparent;
   &:hover {
     background: #3672A3;
+  }
+`;
+
+export const DownloadButton = styled.button`
+  width: 100%;
+  height: 40px;
+  border-radius: 8px;
+  background: #404040;
+  color: #fff;
+  margin-bottom: 7px;
+  font-weight: bold;
+  transition: background 0.2s ease-in;
+  font-size: 14px;
+  border: 2px solid transparent;
+  &:hover {
+    background: #212121;
   }
 `;

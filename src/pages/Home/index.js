@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import qs from 'qs';
 
-import {Wrapper, Card, Templates, Form, Button} from './styles';
+import {Wrapper, Card, Templates, Form, Button, DownloadButton} from './styles';
 import logo from '../../assets/logo.svg';
 
 const Home = () => {
@@ -24,6 +24,19 @@ const Home = () => {
         setBoxes(newValues);
     };
 
+    const download = (uri) => {
+        fetch(uri)
+            .then(response => {
+                response.blob().then(blob => {
+                    let url = window.URL.createObjectURL(blob);
+                    let a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'meme.jpg';
+                    a.click();
+                });
+            });
+    };
+
     function handleSelectTemplate(template) {
         setSelectedTemplate(template);
         setBoxes([]);
@@ -34,8 +47,8 @@ const Home = () => {
 
         const params = qs.stringify({
             template_id: selectedTemplate.id,
-            username: 'yourusername',
-            password: 'yourpassword',
+            username: 'fvgarcia',
+            password: 'memegenerator',
             boxes: boxes.map(text => ({text})),
         });
 
@@ -59,7 +72,12 @@ const Home = () => {
                 {generatedMeme && (
                     <>
                         <img src={generatedMeme} alt="Generated Meme"/>
-                        <Button type="button" onClick={handleReset}>Criar outro meme</Button>
+                        <DownloadButton
+                            onClick={() => download(generatedMeme)}
+                        >
+                            Download
+                        </DownloadButton>
+                        <Button type="button" onClick={handleReset}>Keep Creating</Button>
                     </>
                 )}
 
@@ -76,6 +94,7 @@ const Home = () => {
                                     onClick={() => handleSelectTemplate(template)}
                                     className={template.id === selectedTemplate?.id ? 'selected' : ''}
                                 >
+
                                     <img src={template.url} alt={template.name}/>
                                 </button>
                             ))}
@@ -89,8 +108,8 @@ const Home = () => {
                                 <Form onSubmit={handleSubmit}>
                                     {(new Array(selectedTemplate.box_count)).fill('').map((_, index) => (
                                         <input
-                                            key={String(index+1)}
-                                            placeholder={`Text #${index+1}`}
+                                            key={String(Math.random())}
+                                            placeholder={`Text #${index + 1}`}
                                             onChange={handleInputChange(index)}
                                         />
                                     ))}
