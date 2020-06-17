@@ -47,8 +47,8 @@ const Home = () => {
 
         const params = qs.stringify({
             template_id: selectedTemplate.id,
-            username: 'fvgarcia',
-            password: 'memegenerator',
+            username: 'yourusername',
+            password: 'yourpassword',
             boxes: boxes.map(text => ({text})),
         });
 
