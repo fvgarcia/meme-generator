@@ -19,4 +19,4 @@ This project was built using ReactJS and styled components. The memes are create
 ### Comments or suggestions
 Send an email to fernando.vgarcia@hotmail.com or a direct to [@fvedoin](https://www.instagram.com/fvedoin/)
 
-This app was inspired by the following video: [Gerador de Memes](https://www.youtube.com/watch?v=Yajip86C8sg)
+This web app was inspired by the following video: [Gerador de Memes](https://www.youtube.com/watch?v=Yajip86C8sg)
